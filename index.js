@@ -1,7 +1,10 @@
 const express = require('express')
+const bodyParser = require('body-parser');
 const { PythonShell } = require("python-shell");
 const app = express()
 const port = 3000
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.text({type: "*/*"}))
 
 app.get('/', (req, res) => {
   res.end('Hello World!');
@@ -10,12 +13,17 @@ app.get('/', (req, res) => {
 
 var py_proc
 app.post("/upload", (req, res) => {
-  console.log(req)
-  const input = req.input
+  let body = ''
+  req.on('data', function(data) {
+    body += data;
+  });
+  console.log(body)
+  
+  
 
   let options = {
     mode: "text",
-    args: ["-i" + req]
+    args: ["-i" + input]
   }
   var pyshell = new PythonShell('hello.py', options)
 
